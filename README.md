@@ -1,6 +1,6 @@
 # Sector001-Space
 
-연구나공부하기위해 만든 VRChat월드 씬과 U#스크립트 파일들입니다
+연구나공부하기위해 만든 VRChat월드 씬과 U#스크립트 파일들입니다  
 VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
 
 # 월드 플레이해보기
