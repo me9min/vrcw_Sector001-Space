@@ -46,8 +46,9 @@ namespace AmelCustomScripts
         //플레이어리스트 UI 텍스트 만들기
         public string MakePlayerListMsg()
         {
-            //VRCPlayerApi.GetPlayers(playerList);
-            //playerCount = (byte)VRCPlayerApi.GetPlayerCount();
+            //임시메세지 저장소 초기화
+            tempMsg = "";
+            //리스트메세지 만들기(플레이어수 만큼 반복)
             for (byte i = 0; i < playerCount; i++)
             {
                 tempMsg += "[" + playerList[i].playerId.ToString() + "] " + playerList[i].displayName + "\n";
