@@ -8,6 +8,10 @@ namespace AmelCustomScripts
 {
     public class PlayerDB : UdonSharpBehaviour
     {
+        [Header("플레이어DB 설정")]
+        [Tooltip("플레이어ID (반드시 설정 중복X)")]
+        public int playerDBId = 0;
+
         [Header("플레이어 발소리 설정")]
         [Tooltip("걷는 발걸음 소리")]
         public AudioSourceClipSystem walkSoundClip;
@@ -17,6 +21,35 @@ namespace AmelCustomScripts
         public AudioSourceClipSystem landingSoundClip;
         [Tooltip("강한 착지 소리")]
         public AudioSourceClipSystem hardLandingSoundClip;
+
+        private int point = 0;
+
+        public int GetPoint()
+        {
+            return point;
+        }
+        public void SetPoint(int inputPoint)
+        {
+            point = inputPoint;
+        }
+        public void AddPoint(int inputPoint)
+        {
+            point += inputPoint;
+        }
+        public void SubPoint(int inputPoint)
+        {
+            point -= inputPoint;
+        }
+
+        public void PositionSyncGlobal()
+        {
+            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "PositionSync");
+        }
+
+        public void PositionSync()
+        {
+            this.transform.position = VRCPlayerApi.GetPlayerById(playerDBId).GetPosition();
+        }
 
         public void WalkSoundPlayGlobal()
         {

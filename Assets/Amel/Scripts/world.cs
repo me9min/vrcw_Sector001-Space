@@ -3,9 +3,8 @@ using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
-using AmelCustomScripts;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using AmelCustomScripts;
 
 public class world : UdonSharpBehaviour
 {
@@ -39,12 +38,8 @@ public class world : UdonSharpBehaviour
     [Tooltip("에러메세지(닉네임)")]
     public string errorMsg = "<color=#de1616>플레이어 찾을 수 없음</color>";
 
-    private int playerCount = 0; //플레이어 수 저장
-    //private Dictionary<int, string> playerList = new Dictionary<int, string>();
-    private VRCPlayerApi[] playerListTemp = new VRCPlayerApi[20]; //플레이어 리스트 저장 넉넉하게20개할당
-    private string playerListMsgTemp = ""; //플레이어리스트 메세지 임시저장
-
     private VRCPlayerApi localPlayer = null; //로컬플레이어(나)
+    private byte localPlayerId = 0; //로컬플레이어(나)의ID값
     private byte localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
     private bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
 
@@ -65,33 +60,14 @@ public class world : UdonSharpBehaviour
     {
         if (isPlayerSetted)
         {
-            /*//UI 플레이어 리스트 갱신
-            playerCount = VRCPlayerApi.GetPlayerCount();
-            VRCPlayerApi.GetPlayers(playerList);
 
-            //리스트 갱신
-            playerListMsgTemp = "[0] " + playerList[0].displayName;
-            for (byte i = 1; i < playerCount; i++)
-            {
-                playerListMsgTemp += "\n[" + i.ToString() + "] " + playerList[i].displayName;
-            }
-            playerListMsg.text = playerListMsgTemp;
-
-            // playerList playerId순으로 배열을 정렬시킨다
-
-            //리스트 정렬 갱신
-            playerListMsgTemp = "[0] " + playerList[0].displayName;
-            for (byte i = 1; i < playerCount; i++)
-            {
-                playerListMsgTemp += "\n[" + i.ToString() + "] " + playerList[i].displayName;
-            }
-            playerListSortMsg.text = playerListMsgTemp;*/
         }
         else
         {
             if (player == Networking.LocalPlayer) //조인한 플레이어 와 지금나자신을 비교
             {
                 localPlayer = player;
+                localPlayerId = (byte)player.playerId;
                 player.SetWalkSpeed(walkSpeed);
                 player.SetStrafeSpeed(walkSpeed);
                 player.SetRunSpeed(runSpeed);
@@ -100,51 +76,19 @@ public class world : UdonSharpBehaviour
                 CombatSystemSetup(player);
             }
 
-            /*//임시로 playerListTemp변수에 모든플레이어정보저장
-            VRCPlayerApi.GetPlayers(playerListTemp);
-            //플레이어 인원수 저장
-            playerCount = VRCPlayerApi.GetPlayerCount();
-            //playerList변수에 playerListTemp를 처리해 정제된 값 저장
-            for (byte i = 0; i < playerCount; i++)
-            {
-                playerList.Add(playerListTemp[i].playerId, playerListTemp[i].displayName);
-            }
-            //플레이어리스트 UI 갱신
-            playerListMsgTemp = "[0] " + playerList[0];
-            for (byte i = 1; i < playerCount; i++)
-            {
-                playerListMsgTemp += "\n[" + i.ToString() + "] " + playerList.TryGetValue(i, out errorMsg);
-            }
-            playerListSortMsg.text = playerListMsgTemp
+            //로컬변수에 인원리스트,인원수 세팅
+            playerDBMain.SetPlayerList();
+            //플레이어목록UI 갱신
+            playerListMsg.text = playerDBMain.MakePlayerListMsg();
 
             //이코드는 최초로 한번실행하면되므로 false에서 true로 변경
-            isPlayerSetted = true;*/
+            isPlayerSetted = true;
         }
     }
 
     public override void OnPlayerLeft(VRCPlayerApi player)
     {
-        /*//UI 플레이어 리스트 갱신
-        playerCount = VRCPlayerApi.GetPlayerCount();
-        VRCPlayerApi.GetPlayers(playerList);
 
-        //리스트 갱신
-        playerListMsgTemp = "[0] " + playerList[0].displayName;
-        for (byte i = 1; i < playerCount; i++)
-        {
-            playerListMsgTemp += "\n[" + i.ToString() + "] " + playerList[i].displayName;
-        }
-        playerListMsg.text = playerListMsgTemp;
-
-        // playerList playerId순으로 배열을 정렬시킨다
-
-        //리스트 정렬 갱신
-        playerListMsgTemp = "[0] " + playerList[0].displayName;
-        for (byte i = 1; i < playerCount; i++)
-        {
-            playerListMsgTemp += "\n[" + i.ToString() + "] " + playerList[i].displayName;
-        }
-        playerListSortMsg.text = playerListMsgTemp;*/
     }
 
     //프레임 관계없이 모두가 같은주기로 반복
@@ -163,28 +107,32 @@ public class world : UdonSharpBehaviour
                     if (Input.GetKey(KeyCode.LeftShift))
                     {
                         //달리는소리 play 모두에게 전송
-                        //playerDBMain.PlayerWalkSoundPlay();
+                        playerDBMain.PlayerPositionSync(localPlayerId);
+                        playerDBMain.PlayerWalkSoundPlay(localPlayerId);
                     }
                     else
                     {
                         //걷는소리 play 모두에게 전송
+                        playerDBMain.PlayerPositionSync(localPlayerId);
+                        playerDBMain.PlayerWalkSoundPlay(localPlayerId);
                     }
                 }
                 //추락후 착지시 걸린시간 체크
                 if (localTimeSpentFallingAndLanding >= 40)
                 {
-                    //if (localTimeSpentFallingAndLanding >= 80)
-                    //{
-                    //    //강한착지 소리 play 모두에게 전송
-                    //    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "HardLandingSoundPlay");
-                    //}
-                    //else
-                    //{
-                    //    //착지 소리 play 모두에게 전송
-                    //    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "LandingSoundPlay");
-                    //}
+                    /*if (localTimeSpentFallingAndLanding >= 80)
+                    {
+                        //강한착지 소리 play 모두에게 전송
+                        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "HardLandingSoundPlay");
+                    }
+                    else
+                    {
+                        //착지 소리 play 모두에게 전송
+                        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "LandingSoundPlay");
+                    }*/
 
-                    //SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "HardLandingSoundPlay");
+                    playerDBMain.PlayerPositionSync(localPlayerId);
+                    playerDBMain.PlayerHardLandingSoundPlay(localPlayerId);
 
                     //초기화
                     localTimeSpentFallingAndLanding = 0;

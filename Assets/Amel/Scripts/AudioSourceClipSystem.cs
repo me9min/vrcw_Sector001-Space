@@ -9,16 +9,14 @@ namespace AmelCustomScripts
     public class AudioSourceClipSystem : UdonSharpBehaviour
     {
         [Header("오디오 설정")]
-        [Tooltip("오디오 재생기 위치")]
-        public Transform playAudioPosition;
-        [Tooltip("오디오 소스 (재생기)")]
+        [Tooltip("오디오 재생기")]
         public AudioSource playAudio;
-        [Tooltip("오디오 클립")]
-        public AudioClip[] audioClip;
+        [Tooltip("오디오 소스 클립")]
+        public AudioClip[] audioClips;
         
         public void RandomPlay()
         {
-            playAudio.clip = audioClip[Random.Range(0, audioClip.Length-1)];
+            playAudio.clip = audioClips[Random.Range(0, audioClips.Length)];
             playAudio.Play();
         }
 
