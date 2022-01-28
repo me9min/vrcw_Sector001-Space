@@ -13,21 +13,12 @@ namespace AmelCustomScripts
 
         private VRCPlayerApi[] playerList = new VRCPlayerApi[256]; //플레이어 리스트 로컬저장 byte크기만큼256개할당 0~255
         private byte playerCount = 0; //플레이어수 로컬저장
-        private byte tempId = 0;
         private string tempMsg = "";
 
         public void SetPlayerList()
         {
             VRCPlayerApi.GetPlayers(playerList);
             playerCount = (byte)VRCPlayerApi.GetPlayerCount();
-        }
-        public VRCPlayerApi[] GetPlayerList()
-        {
-            return playerList;
-        }
-        public byte GetPlayerCount()
-        {
-            return playerCount;
         }
 
         public void PlayerPositionSync(byte playerDBId)
@@ -55,11 +46,11 @@ namespace AmelCustomScripts
         //플레이어리스트 UI 텍스트 만들기
         public string MakePlayerListMsg()
         {
-            tempMsg = "[0] " + playerList[0];
-            for (byte i = 1; i < playerCount; i++)
+            //VRCPlayerApi.GetPlayers(playerList);
+            //playerCount = (byte)VRCPlayerApi.GetPlayerCount();
+            for (byte i = 0; i < playerCount; i++)
             {
-                tempId = (byte)playerList[i].playerId;
-                tempMsg += "\n[" + tempId.ToString() + "] " + playerList[tempId].displayName;
+                tempMsg += "[" + playerList[i].playerId.ToString() + "] " + playerList[i].displayName + "\n";
             }
             return tempMsg;
         }

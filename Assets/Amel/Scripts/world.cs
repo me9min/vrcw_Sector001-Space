@@ -58,11 +58,7 @@ public class world : UdonSharpBehaviour
     //어떤 플레이어가 조인 했을때 들어온 플레이어객체를 반환
     public override void OnPlayerJoined(VRCPlayerApi player)
     {
-        if (isPlayerSetted)
-        {
-
-        }
-        else
+        if (!isPlayerSetted)
         {
             if (player == Networking.LocalPlayer) //조인한 플레이어 와 지금나자신을 비교
             {
@@ -74,21 +70,24 @@ public class world : UdonSharpBehaviour
                 player.SetJumpImpulse(jumpPower);
                 player.SetGravityStrength(gravityPower);
                 CombatSystemSetup(player);
+
+                //이코드는 최초로 한번실행하면되므로 false에서 true로 변경
+                isPlayerSetted = true;
             }
-
-            //로컬변수에 인원리스트,인원수 세팅
-            playerDBMain.SetPlayerList();
-            //플레이어목록UI 갱신
-            playerListMsg.text = playerDBMain.MakePlayerListMsg();
-
-            //이코드는 최초로 한번실행하면되므로 false에서 true로 변경
-            isPlayerSetted = true;
         }
+
+        //로컬변수에 인원리스트,인원수 세팅
+        playerDBMain.SetPlayerList();
+        //플레이어목록UI 갱신
+        playerListMsg.text = playerDBMain.MakePlayerListMsg();
     }
 
     public override void OnPlayerLeft(VRCPlayerApi player)
     {
-
+        //로컬변수에 인원리스트,인원수 세팅
+        playerDBMain.SetPlayerList();
+        //플레이어목록UI 갱신
+        playerListMsg.text = playerDBMain.MakePlayerListMsg();
     }
 
     //프레임 관계없이 모두가 같은주기로 반복
