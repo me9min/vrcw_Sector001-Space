@@ -6,6 +6,7 @@ using VRC.Udon;
 
 namespace AmelCustomScripts
 {
+    //이 클래스의 기능은 명령함수(플레이어ID)를 받아 명령을 라우팅 해줍니다
     public class PlayerDBMain : UdonSharpBehaviour
     {
         [Header("플레이어DB할당")]
@@ -21,9 +22,30 @@ namespace AmelCustomScripts
             playerCount = (byte)VRCPlayerApi.GetPlayerCount();
         }
 
+        public int PlayerGetPoint(byte playerDBId)
+        {
+            return playerDB[playerDBId].GetPoint();
+        }
+        public void PlayerSetPoint(byte playerDBId, int inputPoint)
+        {
+            playerDB[playerDBId].SetPoint(inputPoint);
+        }
+        public void PlayerAddPoint(byte playerDBId, int inputPoint)
+        {
+            playerDB[playerDBId].AddPoint(inputPoint);
+        }
+        public void PlayerSubPoint(byte playerDBId, int inputPoint)
+        {
+            playerDB[playerDBId].SubPoint(inputPoint);
+        }
+
         public void PlayerPositionSync(byte playerDBId)
         {
             playerDB[playerDBId].PositionSyncGlobal();
+        }
+        public void PlayerRotationSync(byte playerDBId)
+        {
+            playerDB[playerDBId].RotationSyncGlobal();
         }
 
         public void PlayerWalkSoundPlay(byte playerDBId)

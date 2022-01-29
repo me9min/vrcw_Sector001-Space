@@ -45,14 +45,23 @@ namespace AmelCustomScripts
         {
             SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "PositionSync");
         }
+        public void RotationSyncGlobal()
+        {
+            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "RotationSync");
+        }
 
         public void PositionSync()
         {
             this.transform.position = VRCPlayerApi.GetPlayerById(playerDBId).GetPosition();
         }
+        public void RotationSync()
+        {
+            this.transform.rotation = VRCPlayerApi.GetPlayerById(playerDBId).GetRotation();
+        }
 
         public void WalkSoundPlayGlobal()
         {
+            //걷는소리 and 뛰는소리 둘다 플레이 중이 아닐시
             if (!walkSoundClip.IsPlaying() && !runSoundClip.IsPlaying())
             {
                 //걷는소리 play 모두에게 전송
@@ -61,6 +70,7 @@ namespace AmelCustomScripts
         }
         public void RunSoundPlayGlobal()
         {
+            //걷는소리 and 뛰는소리 둘다 플레이 중이 아닐시
             if (!walkSoundClip.IsPlaying() && !runSoundClip.IsPlaying())
             {
                 //달리는소리 play 모두에게 전송
