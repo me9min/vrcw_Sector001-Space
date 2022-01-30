@@ -9,13 +9,17 @@
 !/Assets/
 !/Assets/Amel/
 !/Assets/Amel/Animations/
+!/Assets/Amel/Materials/
+!/Assets/Amel/Materials/**/
 !/Assets/Amel/Prefabs/
 !/Assets/Amel/Scripts/
 !/Assets/Amel/Terrains/
 
-#!/Assets/Amel/*.unity
+!/Assets/Amel/*.unity
 !/Assets/Amel/Animations/*.anim
 !/Assets/Amel/Animations/*.controller
+!/Assets/Amel/Materials/*.mat
+!/Assets/Amel/Materials/**/*.mat
 !/Assets/Amel/Prefabs/*.prefab
 !/Assets/Amel/Scripts/*.asset
 !/Assets/Amel/Scripts/*.cs
