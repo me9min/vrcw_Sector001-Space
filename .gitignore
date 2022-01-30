@@ -11,7 +11,6 @@
 !/Assets/Amel/Animations/
 !/Assets/Amel/Materials/
 !/Assets/Amel/Materials/**/
-!/Assets/Amel/Prefabs/
 !/Assets/Amel/Scripts/
 !/Assets/Amel/Terrains/
 
@@ -20,7 +19,6 @@
 !/Assets/Amel/Animations/*.controller
 !/Assets/Amel/Materials/*.mat
 !/Assets/Amel/Materials/**/*.mat
-!/Assets/Amel/Prefabs/*.prefab
 !/Assets/Amel/Scripts/*.asset
 !/Assets/Amel/Scripts/*.cs
 !/Assets/Amel/Terrains/*.asset
