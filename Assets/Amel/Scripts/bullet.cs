@@ -35,7 +35,7 @@ public class bullet : UdonSharpBehaviour
             }
             else
             {
-                player.CombatSetCurrentHitpoints(-1);
+                player.CombatSetCurrentHitpoints(0);
                 tempMsg = player.displayName + " 님이 벌집이 되었습니다!";
             }
             SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "MsgChange");

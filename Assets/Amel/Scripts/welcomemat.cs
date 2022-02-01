@@ -51,7 +51,7 @@ public class welcomemat : UdonSharpBehaviour
     {
         trapAni.SetTrigger("trap");
         trapSound.Play();
-        player.CombatSetCurrentHitpoints(-1);
+        player.CombatSetCurrentHitpoints(0);
 
         tempMsg = player.displayName + " 님이 덫밟고 사망!";
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "MsgChange");
