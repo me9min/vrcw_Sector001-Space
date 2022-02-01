@@ -9,8 +9,10 @@ using VRC.Udon;
 public class PlayerDB : UdonSharpBehaviour
 {
     [Header("플레이어DB 설정")]
-    [Tooltip("플레이어ID (반드시 설정 중복X)")]
-    public int playerDBId = 0;
+    [Tooltip("플레이어DB 순서 (반드시 설정, 중복X)")]
+    public int playerDBSeq = 0;
+    [Tooltip("정렬된 플레이어 리스트 가지고있는 스크립트")]
+    public world world;
 
     [Header("플레이어 발소리 설정")]
     [Tooltip("걷는 발걸음 소리")]
@@ -53,11 +55,11 @@ public class PlayerDB : UdonSharpBehaviour
 
     public void PositionSync()
     {
-        this.transform.position = VRCPlayerApi.GetPlayerById(playerDBId).GetPosition();
+        this.transform.position = VRCPlayerApi.GetPlayerById(world.GetPlayerIdBySeq(playerDBSeq)).GetPosition();
     }
     public void RotationSync()
     {
-        this.transform.rotation = VRCPlayerApi.GetPlayerById(playerDBId).GetRotation();
+        this.transform.rotation = VRCPlayerApi.GetPlayerById(world.GetPlayerIdBySeq(playerDBSeq)).GetRotation();
     }
 
     public void WalkSoundPlayGlobal()

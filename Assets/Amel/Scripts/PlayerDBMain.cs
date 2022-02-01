@@ -12,21 +12,21 @@ public class PlayerDBMain : UdonSharpBehaviour
     public PlayerDB[] playerDB;
 
     //플레이어 포인트 관련 함수 라우팅
-    public int PlayerGetPoint(int playerDBId)
+    public int PlayerGetPoint(int playerDBSeq)
     {
-        return playerDB[playerDBId].GetPoint();
+        return playerDB[playerDBSeq].GetPoint();
     }
-    public void PlayerSetPoint(int playerDBId, int inputPoint)
+    public void PlayerSetPoint(int playerDBSeq, int inputPoint)
     {
-        playerDB[playerDBId].SetPoint(inputPoint);
+        playerDB[playerDBSeq].SetPoint(inputPoint);
     }
-    public void PlayerAddPoint(int playerDBId, int inputPoint)
+    public void PlayerAddPoint(int playerDBSeq, int inputPoint)
     {
-        playerDB[playerDBId].AddPoint(inputPoint);
+        playerDB[playerDBSeq].AddPoint(inputPoint);
     }
-    public void PlayerSubPoint(int playerDBId, int inputPoint)
+    public void PlayerSubPoint(int playerDBSeq, int inputPoint)
     {
-        playerDB[playerDBId].SubPoint(inputPoint);
+        playerDB[playerDBSeq].SubPoint(inputPoint);
     }
 
     //플레이어목록대로 오너 업데이트
@@ -38,31 +38,31 @@ public class PlayerDBMain : UdonSharpBehaviour
         }
     }*/
     //플레이어 위치 정보 동기화 함수 라우팅
-    public void PlayerPositionSync(int playerDBId)
+    public void PlayerPositionSync(int playerDBSeq)
     {
-        playerDB[playerDBId].PositionSyncGlobal();
+        playerDB[playerDBSeq].PositionSyncGlobal();
     }
     //플레이어 회전 정보 동기화 함수 라우팅
-    public void PlayerRotationSync(int playerDBId)
+    public void PlayerRotationSync(int playerDBSeq)
     {
-        playerDB[playerDBId].RotationSyncGlobal();
+        playerDB[playerDBSeq].RotationSyncGlobal();
     }
 
     //플레이어 발소리 재생 관련 함수 라우팅
-    public void PlayerWalkSoundPlay(int playerDBId)
+    public void PlayerWalkSoundPlay(int playerDBSeq)
     {
-        playerDB[playerDBId].WalkSoundPlayGlobal();
+        playerDB[playerDBSeq].WalkSoundPlayGlobal();
     }
-    public void PlayerRunSoundPlay(int playerDBId)
+    public void PlayerRunSoundPlay(int playerDBSeq)
     {
-        playerDB[playerDBId].RunSoundPlayGlobal();
+        playerDB[playerDBSeq].RunSoundPlayGlobal();
     }
-    public void PlayerLandingSoundPlay(int playerDBId)
+    public void PlayerLandingSoundPlay(int playerDBSeq)
     {
-        playerDB[playerDBId].LandingSoundPlayGlobal();
+        playerDB[playerDBSeq].LandingSoundPlayGlobal();
     }
-    public void PlayerHardLandingSoundPlay(int playerDBId)
+    public void PlayerHardLandingSoundPlay(int playerDBSeq)
     {
-        playerDB[playerDBId].HardLandingSoundPlayGlobal();
+        playerDB[playerDBSeq].HardLandingSoundPlayGlobal();
     }
 }

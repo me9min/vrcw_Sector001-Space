@@ -44,6 +44,11 @@ public class world : UdonSharpBehaviour
     [HideInInspector] public bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
     [HideInInspector] public int localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
 
+    public int GetPlayerIdBySeq(int playerSeq)
+    {
+        return playerList[playerSeq].playerId;
+    }
+
     //플레이어 물리 세팅 모아둔 함수
     public void PlayerPhysicsSetup(VRCPlayerApi player)
     {
@@ -142,7 +147,8 @@ public class world : UdonSharpBehaviour
     //어떤 플레이어가 나갔을때 들어온 플레이어객체를 반환
     public override void OnPlayerLeft(VRCPlayerApi player)
     {
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "PlayerListUpdate");
+        //플레이어 리스트 갱신
+        PlayerListUpdate();
     }
 
     //플레이어 리스트 갱신 모아둔함수
