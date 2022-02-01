@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Continuous)]
 public class bullet : UdonSharpBehaviour
 {
     [Header("총알 설정")]
@@ -34,7 +35,7 @@ public class bullet : UdonSharpBehaviour
             }
             else
             {
-                player.CombatSetCurrentHitpoints(0);
+                player.CombatSetCurrentHitpoints(-1);
                 tempMsg = player.displayName + " 님이 벌집이 되었습니다!";
             }
             SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "MsgChange");

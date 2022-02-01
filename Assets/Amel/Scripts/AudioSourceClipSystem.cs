@@ -4,6 +4,7 @@ using UnityEngine;
 using VRC.SDKBase;
 using VRC.Udon;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class AudioSourceClipSystem : UdonSharpBehaviour
 {
     [Header("오디오 설정")]

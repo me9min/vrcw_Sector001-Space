@@ -5,6 +5,7 @@ using VRC.SDKBase;
 using VRC.Udon;
 
 //플레이어 마다 할당되어 플레이어 추적 및 추가기능 하는 플레이어Tag 같은 오브젝트
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class PlayerDB : UdonSharpBehaviour
 {
     [Header("플레이어DB 설정")]
