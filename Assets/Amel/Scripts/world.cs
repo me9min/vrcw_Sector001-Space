@@ -44,6 +44,9 @@ public class world : UdonSharpBehaviour
     [HideInInspector] public bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
     [HideInInspector] public int localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
 
+    private bool playerListUpdateSwitch = false;
+    private int playerListUpdateSwitchTimer = 0;
+
     public int GetPlayerIdBySeq(int playerSeq)
     {
         return playerList[playerSeq].playerId;
@@ -74,10 +77,10 @@ public class world : UdonSharpBehaviour
     //플레이어 리스트,인원수 갱신,정렬 후 변수에저장
     public void UpdateSortPlayerList()
     {
-        VRCPlayerApi tempPlayer = null; //정렬할때 임시저장소로 사용
+        VRCPlayerApi tempPlayer; //정렬할때 임시저장소로 사용
 
-        VRCPlayerApi.GetPlayers(playerList); //VRChat에서 플레이어리스트를 가져와 playerList에 삽입
         playerCount = VRCPlayerApi.GetPlayerCount(); //VRChat에서 인원수를 가져와 playerCount에 삽입
+        VRCPlayerApi.GetPlayers(playerList); //VRChat에서 플레이어리스트를 가져와 playerList에 삽입
         
         //플레이어 목록 정렬 알고리즘
         for (int i = 1; i < playerCount; i++)
@@ -140,31 +143,43 @@ public class world : UdonSharpBehaviour
             }
         }
 
-        //플레이어 리스트 갱신
-        PlayerListUpdate();
+        //플레이어 리스트 갱신 트리거 ON
+        playerListUpdateSwitch = true;
     }
 
     //어떤 플레이어가 나갔을때 들어온 플레이어객체를 반환
     public override void OnPlayerLeft(VRCPlayerApi player)
     {
-        //플레이어 리스트 갱신
-        PlayerListUpdate();
-    }
-
-    //플레이어 리스트 갱신 모아둔함수
-    public void PlayerListUpdate()
-    {
-        //로컬변수에 인원리스트,인원수 세팅
-        UpdateSortPlayerList();
-        //오브젝트 오너 업데이트
-        //playerDBMain.UpdatePlayerDBOwn(playerList, playerCount);
-        //플레이어목록UI 갱신
-        playerListMsg.text = MakePlayerListMsg();
+        //플레이어 리스트 갱신 트리거 ON
+        playerListUpdateSwitch = true;
     }
 
     //프레임 관계없이 모두가 같은주기로 반복
     private void FixedUpdate()
     {
+        //true일 때 lazy하게 플레이어 리스트 갱신
+        if (playerListUpdateSwitch)
+        {
+            //10번 반복후 실행
+            if (playerListUpdateSwitchTimer > 9)
+            {
+                //로컬변수에 인원리스트,인원수 세팅
+                UpdateSortPlayerList();
+                //오브젝트 오너 업데이트
+                //playerDBMain.UpdatePlayerDBOwn(playerList, playerCount);
+                //플레이어목록UI 갱신
+                playerListMsg.text = MakePlayerListMsg();
+
+                //스위치 초기화
+                playerListUpdateSwitchTimer = 0;
+                playerListUpdateSwitch = false;
+            }
+            else
+            {
+                playerListUpdateSwitchTimer++;
+            }
+        }
+
         //플레이어 설정이 세팅됬는지 여부확인, localPlayer에 null이면 IsPlayerGrounded가 안됨
         if (isPlayerSetted)
         {
