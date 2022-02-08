@@ -9,10 +9,10 @@ using VRC.Udon;
 public class PlayerDB : UdonSharpBehaviour
 {
     [Header("플레이어DB 설정")]
+    [Tooltip("플레이어DB메인")]
+    public PlayerDBMain playerDBMain;
     [Tooltip("플레이어DB 순서 (반드시 설정, 중복X)")]
     public int playerDBSeq = 0;
-    [Tooltip("정렬된 플레이어 리스트 가지고있는 스크립트")]
-    public world world;
 
     [Header("플레이어 발소리 설정")]
     [Tooltip("걷는 발걸음 소리")]
@@ -26,22 +26,75 @@ public class PlayerDB : UdonSharpBehaviour
 
     private int point = 0;
 
-    //플레이어 포인트관련 함수
-    public int GetPoint()
+    //플레이어 컴뱃시스템관련 함수
+    public void Damage1Global()
     {
-        return point;
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage1");
     }
-    public void SetPoint(int inputPoint)
+    public void Damage10Global()
     {
-        point = inputPoint;
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage10");
     }
-    public void AddPoint(int inputPoint)
+    public void Damage20Global()
     {
-        point += inputPoint;
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage20");
     }
-    public void SubPoint(int inputPoint)
+    public void KillGlobal()
     {
-        point -= inputPoint;
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Kill");
+    }
+
+    public void Damage1()
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            VRCPlayerApi player;
+            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
+            player.CombatSetCurrentHitpoints(player.CombatGetCurrentHitpoints()-1);
+        }
+    }
+    public void Damage10()
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            VRCPlayerApi player;
+            float tempHp;
+            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
+            tempHp = player.CombatGetCurrentHitpoints() - 10;
+            if (tempHp > 0)
+            {
+                player.CombatSetCurrentHitpoints(tempHp);
+            }
+            else
+            {
+                player.CombatSetCurrentHitpoints(0);
+            }
+        }
+    }
+    public void Damage20()
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            VRCPlayerApi player;
+            float tempHp;
+            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
+            tempHp = player.CombatGetCurrentHitpoints() - 20;
+            if (tempHp > 0)
+            {
+                player.CombatSetCurrentHitpoints(tempHp);
+            }
+            else
+            {
+                player.CombatSetCurrentHitpoints(0);
+            }
+        }
+    }
+    public void Kill()
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            playerDBMain.GetPlayerBySeq(playerDBSeq).CombatSetCurrentHitpoints(0);
+        }
     }
 
     public void PositionSyncGlobal()
@@ -55,11 +108,17 @@ public class PlayerDB : UdonSharpBehaviour
 
     public void PositionSync()
     {
-        this.transform.position = VRCPlayerApi.GetPlayerById(world.GetPlayerIdBySeq(playerDBSeq)).GetPosition();
+        if (playerDBMain.isPlayerSetted)
+        {
+            this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
+        }
     }
     public void RotationSync()
     {
-        this.transform.rotation = VRCPlayerApi.GetPlayerById(world.GetPlayerIdBySeq(playerDBSeq)).GetRotation();
+        if (playerDBMain.isPlayerSetted)
+        {
+            this.transform.rotation = playerDBMain.GetPlayerBySeq(playerDBSeq).GetRotation();
+        }
     }
 
     public void WalkSoundPlayGlobal()
@@ -93,18 +152,62 @@ public class PlayerDB : UdonSharpBehaviour
 
     public void WalkSoundPlay()
     {
-        walkSoundClip.RandomPlay();
+        if (playerDBMain.isPlayerSetted)
+        {
+            walkSoundClip.RandomPlay();
+        }
     }
     public void RunSoundPlay()
     {
-        runSoundClip.RandomPlay();
+        if (playerDBMain.isPlayerSetted)
+        {
+            runSoundClip.RandomPlay();
+        }
     }
     public void LandingSoundPlay()
     {
-        landingSoundClip.RandomPlay();
+        if (playerDBMain.isPlayerSetted)
+        {
+            landingSoundClip.RandomPlay();
+        }
     }
     public void HardLandingSoundPlay()
     {
-        hardLandingSoundClip.RandomPlay();
+        if (playerDBMain.isPlayerSetted)
+        {
+            hardLandingSoundClip.RandomPlay();
+        }
+    }
+
+    //플레이어 포인트관련 함수
+    public int GetPoint()
+    {
+        return point;
+    }
+
+    public void SetPointReq(int inputPoint)
+    {
+        
+    }
+    public void AddPointReq(int inputPoint)
+    {
+        
+    }
+    public void SubPointReq(int inputPoint)
+    {
+        
+    }
+
+    public void SetPoint(int inputPoint)
+    {
+        point = inputPoint;
+    }
+    public void AddPoint(int inputPoint)
+    {
+        point += inputPoint;
+    }
+    public void SubPoint(int inputPoint)
+    {
+        point -= inputPoint;
     }
 }

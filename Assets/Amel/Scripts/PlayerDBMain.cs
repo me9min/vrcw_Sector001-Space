@@ -1,6 +1,7 @@
 ﻿
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -11,22 +12,242 @@ public class PlayerDBMain : UdonSharpBehaviour
     [Header("플레이어DB할당")]
     public PlayerDB[] playerDB;
 
-    //플레이어 포인트 관련 함수 라우팅
-    public int PlayerGetPoint(int playerDBSeq)
+    [Header("UI 업데이트")]
+    [Tooltip("플레이어 리스트 보여줄 UI텍스트")]
+    public Text playerListMsg;
+    [Tooltip("에러메세지(닉네임)")]
+    public string errorMsg = "<color=#de1616>플레이어 찾을 수 없음</color>";
+
+    [Header("플레이어 스탯 설정")]
+    [Tooltip("걷는 속도")]
+    public float walkSpeed = 3.0f;
+    [Tooltip("달리기 속도")]
+    public float runSpeed = 5.0f;
+    [Tooltip("점프 힘")]
+    public float jumpPower = 5.0f;
+    [Tooltip("중력")]
+    public float gravityPower = 1.5f;
+
+    [Header("플레이어 컴뱃시스템 설정")]
+    [Tooltip("사망시 리스폰지점")]
+    public Transform respawnLocation;
+    [Tooltip("사망시 리스폰시간")]
+    public float respawnTime = 5.0f;
+    [Tooltip("최대체력 및 초기체력")]
+    public float HP = 2.0f;
+
+    private VRCPlayerApi[] playerList = new VRCPlayerApi[20]; //플레이어 리스트 로컬저장
+    [HideInInspector] public int playerCount = 0; //플레이어수 로컬저장
+    [HideInInspector] public VRCPlayerApi localPlayer = null; //로컬플레이어(나)
+    [HideInInspector] public int localPlayerSeq = 0; //로컬플레이어(나)의 순서
+    [HideInInspector] public bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
+    private bool playerListUpdateSwitch = false;
+    private int playerListUpdateSwitchTimer = 0;
+
+    //플레이어 리스트,인원수 갱신,정렬 후 변수에저장
+    public void UpdateSortPlayerList()
     {
-        return playerDB[playerDBSeq].GetPoint();
+        VRCPlayerApi tempPlayer; //정렬할때 임시저장소로 사용
+
+        playerCount = VRCPlayerApi.GetPlayerCount(); //VRChat에서 인원수를 가져와 playerCount에 삽입
+        VRCPlayerApi.GetPlayers(playerList); //VRChat에서 플레이어리스트를 가져와 playerList에 삽입
+
+        //플레이어 목록 정렬 알고리즘
+        for (int i = 1; i < playerCount; i++)
+        {
+            //i번째 플레이어ID가 나의ID보다 높을때, 마지막은 break로 for문탈출
+            if (playerList[i].playerId > playerList[0].playerId)
+            {
+                tempPlayer = playerList[0];
+                for (int j = 1; j < i; j++)
+                {
+                    playerList[j - 1] = playerList[j];
+                }
+                playerList[i - 1] = tempPlayer;
+                localPlayerSeq = i - 1;
+                break;
+            }
+            else if (i == playerCount - 1)
+            {
+                tempPlayer = playerList[0];
+                for (int j = 1; j <= i; j++)
+                {
+                    playerList[j - 1] = playerList[j];
+                }
+                playerList[i] = tempPlayer;
+                localPlayerSeq = i;
+                break;
+            }
+        }
     }
-    public void PlayerSetPoint(int playerDBSeq, int inputPoint)
+
+    public VRCPlayerApi GetPlayerBySeq(int playerSeq)
     {
-        playerDB[playerDBSeq].SetPoint(inputPoint);
+        return playerList[playerSeq];
     }
-    public void PlayerAddPoint(int playerDBSeq, int inputPoint)
+    public VRCPlayerApi GetPlayerById(int playerId)
     {
-        playerDB[playerDBSeq].AddPoint(inputPoint);
+        VRCPlayerApi player = null;
+        for (int i = 0; i < playerCount; i++)
+        {
+            if (playerList[i].playerId == playerId)
+            {
+                player = playerList[i];
+                break;
+            }
+        }
+        return player;
     }
-    public void PlayerSubPoint(int playerDBSeq, int inputPoint)
+    public int GetPlayerSeqById(int playerId)
     {
-        playerDB[playerDBSeq].SubPoint(inputPoint);
+        int playerSeq = 0;
+        for (int i = 0; i < playerCount; i++)
+        {
+            if (playerList[i].playerId == playerId)
+            {
+                playerSeq = i;
+                break;
+            }
+        }
+        return playerSeq;
+    }
+
+    //플레이어 물리 세팅 모아둔 함수
+    public void PhysicsSetup(int playerSeq)
+    {
+        playerList[playerSeq].SetWalkSpeed(walkSpeed);
+        playerList[playerSeq].SetStrafeSpeed(walkSpeed);
+        playerList[playerSeq].SetRunSpeed(runSpeed);
+        playerList[playerSeq].SetJumpImpulse(jumpPower);
+        playerList[playerSeq].SetGravityStrength(gravityPower);
+    }
+
+    //플레이어 컴뱃시스템 세팅 모아둔 함수
+    public void CombatSystemSetup(int playerSeq)
+    {
+        playerList[playerSeq].CombatSetup(); //컴뱃 시스템 셋팅시작? 월드에 플레이어를따라다니는 컴뱃시스템 오브젝트를 삽입?
+        playerList[playerSeq].CombatSetCurrentHitpoints(HP); //현재체력, 0이나 -1이될시 사망
+        playerList[playerSeq].CombatSetDamageGraphic(null); //데미지입엇을때 혹은 죽었을때 효과
+        playerList[playerSeq].CombatSetMaxHitpoints(HP); //최대체력
+        playerList[playerSeq].CombatSetRespawn(true, respawnTime, respawnLocation); //리스폰 할지 여부 true or false , 리스폰시간float값(초) , 리스폰할 위치 transform형식 외부에서받아오는걸로많이씀
+        playerList[playerSeq].CombatSetup(); //이걸로 마무리 이유는모르겠음
+    }
+
+    public override void OnPlayerJoined(VRCPlayerApi player)
+    {
+        //로컬변수에 인원리스트,인원수 세팅
+        UpdateSortPlayerList();
+        //플레이어리스트 UI 업데이트
+        playerListMsg.text = MakePlayerListMsg();
+
+        //플레이어 설정이 되어있을때
+        if (isPlayerSetted)
+        {
+            //들어온사람 컴뱃시스템 세팅
+            CombatSystemSetup(GetPlayerSeqById(player.playerId));
+        }
+        else //플레이어 설정이 되어있지않을때(최초접속시)
+        {
+            if (player == Networking.LocalPlayer) //조인한 플레이어 와 지금나자신을 비교
+            {
+                //로컬 플레이어(나) 저장
+                localPlayer = player;
+                //플레이어 물리 세팅
+                PhysicsSetup(localPlayerSeq);
+                //모든플레이어 컴뱃시스템 세팅
+                for (int i = 0; i < playerCount; i++)
+                {
+                    CombatSystemSetup(i);
+                }
+                //모든플레이어 오브젝트 오너 업데이트
+                /*for (int i = 0; i < playerCount; i++)
+                {
+                    UpdatePlayerDBOwn(i);
+                }*/
+
+                //이코드는 최초로 한번실행하면되므로 false에서 true로 변경
+                isPlayerSetted = true;
+            }
+        }
+    }
+
+    //어떤 플레이어가 나갔을때 들어온 플레이어객체를 반환
+    public override void OnPlayerLeft(VRCPlayerApi player)
+    {
+        //lazy 플레이어 리스트 갱신 트리거 ON
+        playerListUpdateSwitch = true;
+    }
+
+    //프레임 관계없이 모두가 같은주기로 반복
+    private void FixedUpdate()
+    {
+        //true일 때 lazy하게 플레이어 리스트 갱신
+        if (playerListUpdateSwitch)
+        {
+            //10번 반복후 실행
+            if (playerListUpdateSwitchTimer > 9)
+            {
+                //로컬변수에 인원리스트,인원수 세팅
+                UpdateSortPlayerList();
+                //모든플레이어 오브젝트 오너 업데이트
+                /*for (int i = 0; i < playerCount; i++)
+                {
+                    UpdatePlayerDBOwn(i);
+                }*/
+                //플레이어목록UI 갱신
+                playerListMsg.text = MakePlayerListMsg();
+
+                //스위치 초기화
+                playerListUpdateSwitchTimer = 0;
+                playerListUpdateSwitch = false;
+            }
+            else
+            {
+                playerListUpdateSwitchTimer++;
+            }
+        }
+    }
+
+
+
+    //플레이어리스트 UI 텍스트 만들기
+    public string MakePlayerListMsg()
+    {
+        string tempMsg = ""; //임시 메세지 선언, 빈칸삽입
+        //리스트메세지 만들기(플레이어수 만큼 반복)
+        for (byte i = 0; i < playerCount; i++)
+        {
+            tempMsg += i.ToString() + ".[" + playerList[i].playerId.ToString() + "] " + playerList[i].displayName + "\n";
+        }
+        return tempMsg;
+    }
+
+    //플레이어 컴뱃시스템 관련 함수 (로컬)
+    public float CombatSystemGetHP(int playerDBSeq)
+    {
+        return playerList[playerDBSeq].CombatGetCurrentHitpoints();
+    }
+    public void LocalPlayerKill(int playerDBSeq)
+    {
+        playerList[playerDBSeq].CombatSetCurrentHitpoints(0);
+    }
+
+    //플레이어 컴뱃시스템 관련 함수 라우팅
+    public void PlayerDamage1(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].Damage1Global();
+    }
+    public void PlayerDamage10(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].Damage10Global();
+    }
+    public void PlayerDamage20(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].Damage20Global();
+    }
+    public void PlayerKill(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].KillGlobal();
     }
 
     //플레이어목록대로 오너 업데이트
@@ -64,5 +285,23 @@ public class PlayerDBMain : UdonSharpBehaviour
     public void PlayerHardLandingSoundPlay(int playerDBSeq)
     {
         playerDB[playerDBSeq].HardLandingSoundPlayGlobal();
+    }
+
+    //플레이어 포인트 관련 함수 라우팅
+    public int PlayerGetPoint(int playerDBSeq)
+    {
+        return playerDB[playerDBSeq].GetPoint();
+    }
+    public void PlayerSetPoint(int playerDBSeq, int inputPoint)
+    {
+        playerDB[playerDBSeq].SetPoint(inputPoint);
+    }
+    public void PlayerAddPoint(int playerDBSeq, int inputPoint)
+    {
+        playerDB[playerDBSeq].AddPoint(inputPoint);
+    }
+    public void PlayerSubPoint(int playerDBSeq, int inputPoint)
+    {
+        playerDB[playerDBSeq].SubPoint(inputPoint);
     }
 }

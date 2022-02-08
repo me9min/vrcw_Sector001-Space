@@ -1,5 +1,4 @@
 ﻿
-using System;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,38 +11,36 @@ public class bullet : UdonSharpBehaviour
     [Header("총알 설정")]
     [Tooltip("데미지")]
     public float damage = 1.0f;
+    [Tooltip("정렬된 플레이어 리스트 가지고있는 스크립트")]
+    public PlayerDBMain playerDBMain;
 
     [Header("UI 메세지")]
     [Tooltip("웰컴 메세지")]
     public Text welcomeMsg;
 
-    [HideInInspector]
-    public float tempHp = 1;
-    [HideInInspector]
-    public string tempMsg;
+    private float tempHp = 1;
+    private string tempMsg = "";
 
     public override void OnPlayerParticleCollision(VRCPlayerApi player)
     {
-        tempHp = player.CombatGetCurrentHitpoints();
-        if (tempHp > 0)
+        if (playerDBMain.isPlayerSetted)
         {
-            tempHp -= damage;
+            tempHp = player.CombatGetCurrentHitpoints();
             if (tempHp > 0)
             {
-                player.CombatSetCurrentHitpoints(tempHp);
-                tempMsg = "총맞은사람: " + player.displayName + " 남은체력: " + tempHp;
+                tempHp -= damage;
+                if (tempHp > 0)
+                {
+                    player.CombatSetCurrentHitpoints(tempHp);
+                    tempMsg = "총맞은사람: " + player.displayName + " 남은체력: " + tempHp;
+                }
+                else
+                {
+                    player.CombatSetCurrentHitpoints(0);
+                    tempMsg = player.displayName + " 님이 벌집이 되었습니다!";
+                }
+                welcomeMsg.text = tempMsg;
             }
-            else
-            {
-                player.CombatSetCurrentHitpoints(0);
-                tempMsg = player.displayName + " 님이 벌집이 되었습니다!";
-            }
-            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "MsgChange");
         }
-    }
-
-    public void MsgChange()
-    {
-        welcomeMsg.text = tempMsg;
     }
 }
