@@ -12,7 +12,7 @@ public class PlayerDBMain : UdonSharpBehaviour
     [Header("플레이어DB할당")]
     public PlayerDB[] playerDB;
 
-    [Header("UI 업데이트")]
+    [Header("UI설정")]
     [Tooltip("플레이어 리스트 보여줄 UI텍스트")]
     public Text playerListMsg;
     [Tooltip("에러메세지(닉네임)")]
@@ -36,11 +36,12 @@ public class PlayerDBMain : UdonSharpBehaviour
     [Tooltip("최대체력 및 초기체력")]
     public float HP = 2.0f;
 
-    private VRCPlayerApi[] playerList = new VRCPlayerApi[20]; //플레이어 리스트 로컬저장
+    [HideInInspector] public VRCPlayerApi[] playerList = new VRCPlayerApi[20]; //플레이어 리스트 로컬저장
     [HideInInspector] public int playerCount = 0; //플레이어수 로컬저장
     [HideInInspector] public VRCPlayerApi localPlayer = null; //로컬플레이어(나)
     [HideInInspector] public int localPlayerSeq = 0; //로컬플레이어(나)의 순서
     [HideInInspector] public bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
+    [HideInInspector] public int tempPlayerSeq = 0; //플레이어 순서 임시저장
     private bool playerListUpdateSwitch = false;
     private int playerListUpdateSwitchTimer = 0;
 
@@ -145,6 +146,8 @@ public class PlayerDBMain : UdonSharpBehaviour
         {
             //들어온사람 컴뱃시스템 세팅
             CombatSystemSetup(GetPlayerSeqById(player.playerId));
+            //들어온사람 컴뱃시스템 세팅
+            Networking.SetOwner(player, playerDB[GetPlayerSeqById(player.playerId)].gameObject);
         }
         else //플레이어 설정이 되어있지않을때(최초접속시)
         {
@@ -160,10 +163,10 @@ public class PlayerDBMain : UdonSharpBehaviour
                     CombatSystemSetup(i);
                 }
                 //모든플레이어 오브젝트 오너 업데이트
-                /*for (int i = 0; i < playerCount; i++)
+                for (int i = 0; i < playerCount; i++)
                 {
-                    UpdatePlayerDBOwn(i);
-                }*/
+                    Networking.SetOwner(playerList[i], playerDB[i].gameObject);
+                }
 
                 //이코드는 최초로 한번실행하면되므로 false에서 true로 변경
                 isPlayerSetted = true;
@@ -190,10 +193,10 @@ public class PlayerDBMain : UdonSharpBehaviour
                 //로컬변수에 인원리스트,인원수 세팅
                 UpdateSortPlayerList();
                 //모든플레이어 오브젝트 오너 업데이트
-                /*for (int i = 0; i < playerCount; i++)
+                for (int i = 0; i < playerCount; i++)
                 {
-                    UpdatePlayerDBOwn(i);
-                }*/
+                    Networking.SetOwner(playerList[i], playerDB[i].gameObject);
+                }
                 //플레이어목록UI 갱신
                 playerListMsg.text = MakePlayerListMsg();
 
@@ -217,7 +220,19 @@ public class PlayerDBMain : UdonSharpBehaviour
         //리스트메세지 만들기(플레이어수 만큼 반복)
         for (byte i = 0; i < playerCount; i++)
         {
-            tempMsg += i.ToString() + ".[" + playerList[i].playerId.ToString() + "] " + playerList[i].displayName + "\n";
+            tempMsg += i.ToString() + ".[" + playerList[i].playerId.ToString() + "] <color=#ffff32>" + playerList[i].displayName + "</color>";
+            if (playerList[i].isMaster)
+            {
+                tempMsg += " <color=#de1616>(Master)</color>";
+            }
+            if (i == localPlayerSeq)
+            {
+                tempMsg += " (나)\n";
+            }
+            else
+            {
+                tempMsg += "\n";
+            }
         }
         return tempMsg;
     }
@@ -232,32 +247,6 @@ public class PlayerDBMain : UdonSharpBehaviour
         playerList[playerDBSeq].CombatSetCurrentHitpoints(0);
     }
 
-    //플레이어 컴뱃시스템 관련 함수 라우팅
-    public void PlayerDamage1(int playerDBSeq)
-    {
-        playerDB[playerDBSeq].Damage1Global();
-    }
-    public void PlayerDamage10(int playerDBSeq)
-    {
-        playerDB[playerDBSeq].Damage10Global();
-    }
-    public void PlayerDamage20(int playerDBSeq)
-    {
-        playerDB[playerDBSeq].Damage20Global();
-    }
-    public void PlayerKill(int playerDBSeq)
-    {
-        playerDB[playerDBSeq].KillGlobal();
-    }
-
-    //플레이어목록대로 오너 업데이트
-    /*public void UpdatePlayerDBOwn(VRCPlayerApi[] players, int playerCount)
-    {
-        for (int i = 0; i < playerCount; i++)
-        {
-            playerDB[i].Set오너(players[i]);
-        }
-    }*/
     //플레이어 위치 정보 동기화 함수 라우팅
     public void PlayerPositionSync(int playerDBSeq)
     {
@@ -288,6 +277,10 @@ public class PlayerDBMain : UdonSharpBehaviour
     }
 
     //플레이어 포인트 관련 함수 라우팅
+    public void PlayerSyncPoint(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].SyncPoint();
+    }
     public int PlayerGetPoint(int playerDBSeq)
     {
         return playerDB[playerDBSeq].GetPoint();

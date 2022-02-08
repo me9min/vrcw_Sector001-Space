@@ -24,78 +24,8 @@ public class PlayerDB : UdonSharpBehaviour
     [Tooltip("강한 착지 소리")]
     public AudioSourceClipSystem hardLandingSoundClip;
 
-    private int point = 0;
-
-    //플레이어 컴뱃시스템관련 함수
-    public void Damage1Global()
-    {
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage1");
-    }
-    public void Damage10Global()
-    {
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage10");
-    }
-    public void Damage20Global()
-    {
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Damage20");
-    }
-    public void KillGlobal()
-    {
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Kill");
-    }
-
-    public void Damage1()
-    {
-        if (playerDBMain.isPlayerSetted)
-        {
-            VRCPlayerApi player;
-            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
-            player.CombatSetCurrentHitpoints(player.CombatGetCurrentHitpoints()-1);
-        }
-    }
-    public void Damage10()
-    {
-        if (playerDBMain.isPlayerSetted)
-        {
-            VRCPlayerApi player;
-            float tempHp;
-            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
-            tempHp = player.CombatGetCurrentHitpoints() - 10;
-            if (tempHp > 0)
-            {
-                player.CombatSetCurrentHitpoints(tempHp);
-            }
-            else
-            {
-                player.CombatSetCurrentHitpoints(0);
-            }
-        }
-    }
-    public void Damage20()
-    {
-        if (playerDBMain.isPlayerSetted)
-        {
-            VRCPlayerApi player;
-            float tempHp;
-            player = playerDBMain.GetPlayerBySeq(playerDBSeq);
-            tempHp = player.CombatGetCurrentHitpoints() - 20;
-            if (tempHp > 0)
-            {
-                player.CombatSetCurrentHitpoints(tempHp);
-            }
-            else
-            {
-                player.CombatSetCurrentHitpoints(0);
-            }
-        }
-    }
-    public void Kill()
-    {
-        if (playerDBMain.isPlayerSetted)
-        {
-            playerDBMain.GetPlayerBySeq(playerDBSeq).CombatSetCurrentHitpoints(0);
-        }
-    }
+    [Header("플레이어 초기 소지금")]
+    [UdonSynced] public int point = 0;
 
     public void PositionSyncGlobal()
     {
@@ -180,24 +110,24 @@ public class PlayerDB : UdonSharpBehaviour
     }
 
     //플레이어 포인트관련 함수
+    [System.Obsolete]
+    public override void OnOwnershipTransferred()
+    {
+        point = 0;
+    }
+    public void SyncPoint()
+    {
+        RequestSerialization();
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "SyncPointGlobal");
+    }
+    public void SyncPointGlobal()
+    {
+        playerDBMain.tempPlayerSeq = playerDBSeq;
+    }
     public int GetPoint()
     {
         return point;
     }
-
-    public void SetPointReq(int inputPoint)
-    {
-        
-    }
-    public void AddPointReq(int inputPoint)
-    {
-        
-    }
-    public void SubPointReq(int inputPoint)
-    {
-        
-    }
-
     public void SetPoint(int inputPoint)
     {
         point = inputPoint;

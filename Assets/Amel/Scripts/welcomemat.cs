@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 
-[UdonBehaviourSyncMode(BehaviourSyncMode.Continuous)]
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class welcomemat : UdonSharpBehaviour
 {
     [Header("트랩 설정")]
@@ -16,7 +16,7 @@ public class welcomemat : UdonSharpBehaviour
     [Tooltip("정렬된 플레이어 리스트 가지고있는 스크립트")]
     public PlayerDBMain playerDBMain;
 
-    [Header("UI메세지")]
+    [Header("UI설정")]
     [Tooltip("웰컴 메세지")]
     public Text welcomeMsg;
 
@@ -40,7 +40,6 @@ public class welcomemat : UdonSharpBehaviour
             trapAni.SetTrigger("trap");
             trapSound.Play();
             player.CombatSetCurrentHitpoints(0);
-            //playerDBMain.LocalPlayerKill(playerDBMain.GetPlayerSeqById(player.playerId));
             tempMsg = player.displayName + " 님이 덫밟고 사망!";
             welcomeMsg.text = tempMsg;
         }

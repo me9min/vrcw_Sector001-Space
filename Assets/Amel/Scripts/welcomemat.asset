@@ -17,7 +17,7 @@ MonoBehaviour:
   udonAssembly: 
   assemblyError: 
   sourceCsScript: {fileID: 11500000, guid: 9e4d8b03563ecaf41bda03c207ea6d97, type: 3}
-  behaviourSyncMode: 3
+  behaviourSyncMode: 4
   behaviourIDHeapVarName: __refl_const_intnl_udonTypeID
   compileErrors: []
   hasInteractEvent: 0
@@ -324,7 +324,7 @@ MonoBehaviour:
       Data: 22|UnityEngine.HeaderAttribute, UnityEngine.CoreModule
     - Name: header
       Entry: 1
-      Data: "UI\uBA54\uC138\uC9C0"
+      Data: "UI\uC124\uC815"
     - Name: 
       Entry: 8
       Data: 

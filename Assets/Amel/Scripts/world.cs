@@ -1,6 +1,7 @@
 ﻿
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 
@@ -11,6 +12,10 @@ public class world : UdonSharpBehaviour
     [Header("플레이어DB시스템")]
     [Tooltip("플레이어DB메인")]
     public PlayerDBMain playerDBMain;
+
+    [Header("UI설정")]
+    [Tooltip("웰컴 메세지")]
+    public Text welcomeMsg;
 
     private int localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
 
@@ -64,6 +69,57 @@ public class world : UdonSharpBehaviour
             {
                 localTimeSpentFallingAndLanding++;
             }
+
+            //내가 마스터인지 (마스터전용 치트)
+            if (playerDBMain.localPlayer.isMaster)
+            {
+                //P버튼 눌럿을때
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportAllToMe");
+                }
+            }
+
+            //포인트 설정 키
+            if (Input.GetKeyDown(KeyCode.KeypadPlus))
+            {
+                playerDBMain.PlayerAddPoint(playerDBMain.localPlayerSeq, 1);
+                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+            }
+            if (Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                playerDBMain.PlayerSubPoint(playerDBMain.localPlayerSeq, 1);
+                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad0))
+            {
+                playerDBMain.PlayerSetPoint(playerDBMain.localPlayerSeq, 0);
+                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                playerDBMain.PlayerSetPoint(playerDBMain.localPlayerSeq, 1);
+                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+            }
         }
+    }
+
+    //마스터전용 치트 관련 함수
+    public void TeleportAllToMe()
+    {
+        for (int i = 1; i < playerDBMain.playerCount; i++)
+        {
+            playerDBMain.playerList[i].TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
+        }
+    }
+
+    //포인트 UI업데이트
+    public void UpdatePointChanged()
+    {
+        welcomeMsg.text = playerDBMain.playerList[playerDBMain.tempPlayerSeq].displayName + "님의 포인트: " + playerDBMain.PlayerGetPoint(playerDBMain.tempPlayerSeq).ToString();
     }
 }
