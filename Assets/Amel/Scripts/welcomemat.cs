@@ -30,6 +30,7 @@ public class welcomemat : UdonSharpBehaviour
     {
         tempPlayer = player;
         msgUpdateSwitch = true;
+        msgUpdateSwitchTimer = 0;
     }
 
     //콜라이더가 is trigger 체크되어 있고 플레이어가 콜라이더에 들어왔을때

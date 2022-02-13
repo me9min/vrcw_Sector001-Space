@@ -134,6 +134,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         playerList[playerSeq].CombatSetup(); //이걸로 마무리 이유는모르겠음
     }
 
+    //어떤 플레이어가 접속했을때 들어온 플레이어객체를 반환
     public override void OnPlayerJoined(VRCPlayerApi player)
     {
         //로컬변수에 인원리스트,인원수 세팅
@@ -151,7 +152,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         }
         else //플레이어 설정이 되어있지않을때(최초접속시)
         {
-            if (player == Networking.LocalPlayer) //조인한 플레이어 와 지금나자신을 비교
+            if (player.isLocal) //조인한 플레이어 가 로컬(나)인지
             {
                 //로컬 플레이어(나) 저장
                 localPlayer = player;
@@ -179,6 +180,7 @@ public class PlayerDBMain : UdonSharpBehaviour
     {
         //lazy 플레이어 리스트 갱신 트리거 ON
         playerListUpdateSwitch = true;
+        playerListUpdateSwitchTimer = 0;
     }
 
     //프레임 관계없이 모두가 같은주기로 반복
