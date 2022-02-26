@@ -46,6 +46,7 @@ public class welcomemat : UdonSharpBehaviour
         }
     }
 
+    //프레임 관계없이 모두가 같은주기(0.02초)로 반복
     private void FixedUpdate()
     {
         //true일 때 lazy하게 반복

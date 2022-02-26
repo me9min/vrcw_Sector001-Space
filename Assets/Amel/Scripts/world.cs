@@ -19,7 +19,7 @@ public class world : UdonSharpBehaviour
 
     private int localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
 
-    //프레임 관계없이 모두가 같은주기로 반복
+    //프레임 관계없이 모두가 같은주기(0.02초)로 반복
     private void FixedUpdate()
     {
         //플레이어 설정이 세팅됬는지 여부확인, localPlayer에 null이면 IsPlayerGrounded가 안됨
@@ -46,9 +46,9 @@ public class world : UdonSharpBehaviour
                     }
                 }
                 //추락후 착지시 걸린시간 체크
-                if (localTimeSpentFallingAndLanding >= 40)
+                if (localTimeSpentFallingAndLanding >= 50)
                 {
-                    /*if (localTimeSpentFallingAndLanding >= 80)
+                    /*if (localTimeSpentFallingAndLanding >= 100)
                     {
                         //강한착지 소리 play 모두에게 전송
                     }
@@ -67,7 +67,10 @@ public class world : UdonSharpBehaviour
             }
             else
             {
-                localTimeSpentFallingAndLanding++;
+                if (localTimeSpentFallingAndLanding < 3000)
+                {
+                    localTimeSpentFallingAndLanding++;
+                }
             }
 
             //내가 마스터인지 (마스터전용 치트)
@@ -76,7 +79,7 @@ public class world : UdonSharpBehaviour
                 //P버튼 눌럿을때
                 if (Input.GetKeyDown(KeyCode.P))
                 {
-                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportAllToMe");
+                    TeleportAllToMe();
                 }
             }
 

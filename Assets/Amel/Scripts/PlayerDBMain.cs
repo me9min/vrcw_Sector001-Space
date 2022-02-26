@@ -183,7 +183,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         playerListUpdateSwitchTimer = 0;
     }
 
-    //프레임 관계없이 모두가 같은주기로 반복
+    //프레임 관계없이 모두가 같은주기(0.02초)로 반복
     private void FixedUpdate()
     {
         //true일 때 lazy하게 플레이어 리스트 갱신
