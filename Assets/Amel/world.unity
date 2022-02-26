@@ -56,15 +56,15 @@ LightmapSettings:
   m_LightmapEditorSettings:
     serializedVersion: 12
     m_Resolution: 2
-    m_BakeResolution: 16
-    m_AtlasSize: 512
+    m_BakeResolution: 64
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
     m_CompAOExponentDirect: 0
     m_ExtractAmbientOcclusion: 0
-    m_Padding: 2
-    m_LightmapParameters: {fileID: 15200, guid: 0000000000000000f000000000000000,
+    m_Padding: 4
+    m_LightmapParameters: {fileID: 15204, guid: 0000000000000000f000000000000000,
       type: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
@@ -73,11 +73,11 @@ LightmapSettings:
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 1
     m_MixedBakeMode: 1
-    m_BakeBackend: 2
+    m_BakeBackend: 1
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 16
     m_PVRSampleCount: 512
-    m_PVRBounces: 2
+    m_PVRBounces: 4
     m_PVREnvironmentSampleCount: 512
     m_PVREnvironmentReferencePointCount: 2048
     m_PVRFilteringMode: 2
@@ -465,9 +465,9 @@ GameObject:
   - component: {fileID: 57896029}
   - component: {fileID: 57896031}
   - component: {fileID: 57896032}
-  m_Layer: 4
-  m_Name: Camera
-  m_TagString: Untagged
+  m_Layer: 22
+  m_Name: MainCamera
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -552,7 +552,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 57896028}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 4194304
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
   antialiasingMode: 0
@@ -5286,7 +5286,7 @@ GameObject:
   - component: {fileID: 577051418}
   - component: {fileID: 577051417}
   - component: {fileID: 577051420}
-  m_Layer: 4
+  m_Layer: 22
   m_Name: UnderWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5352,7 +5352,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 577051419}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 4194304
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
   antialiasingMode: 0
@@ -11170,7 +11170,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1090269085}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: PostProcess
   m_TagString: Untagged
   m_Icon: {fileID: 0}
