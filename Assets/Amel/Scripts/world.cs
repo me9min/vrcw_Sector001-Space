@@ -18,6 +18,7 @@ public class world : UdonSharpBehaviour
     public Text welcomeMsg;
 
     private int localTimeSpentFallingAndLanding = 0; //추락후 착지시 걸린시간 0~255
+    private int keyLimit = 0;
 
     //프레임 관계없이 모두가 같은주기(0.02초)로 반복
     private void FixedUpdate()
@@ -73,51 +74,52 @@ public class world : UdonSharpBehaviour
                 }
             }
 
-            //내가 마스터인지 (마스터전용 치트)
-            if (playerDBMain.localPlayer.isMaster)
+
+            if (keyLimit > 50)
             {
-                //P버튼 눌럿을때
-                if (Input.GetKeyDown(KeyCode.P))
+                keyLimit = 0;
+
+                //내가 마스터인지 (마스터전용 치트)
+                if (playerDBMain.localPlayer.isMaster)
                 {
-                    TeleportAllToMe();
+                    //Q버튼 눌럿을때
+                    if (Input.GetKey(KeyCode.Q))
+                    {
+                        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportMeToMaster");
+                    }
+                }
+
+                //포인트 설정 키
+                if (Input.GetKey(KeyCode.KeypadPlus))
+                {
+                    playerDBMain.PlayerAddPoint(playerDBMain.localPlayerSeq, 1);
+                    playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+                }
+                if (Input.GetKey(KeyCode.KeypadMinus))
+                {
+                    playerDBMain.PlayerSubPoint(playerDBMain.localPlayerSeq, 1);
+                    playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+                }
+                if (Input.GetKey(KeyCode.Keypad0))
+                {
+                    playerDBMain.PlayerSetPoint(playerDBMain.localPlayerSeq, 0);
+                    playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
                 }
             }
-
-            //포인트 설정 키
-            if (Input.GetKeyDown(KeyCode.KeypadPlus))
+            else
             {
-                playerDBMain.PlayerAddPoint(playerDBMain.localPlayerSeq, 1);
-                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
-                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
-            }
-            if (Input.GetKeyDown(KeyCode.KeypadMinus))
-            {
-                playerDBMain.PlayerSubPoint(playerDBMain.localPlayerSeq, 1);
-                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
-                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
-            }
-            if (Input.GetKeyDown(KeyCode.Keypad0))
-            {
-                playerDBMain.PlayerSetPoint(playerDBMain.localPlayerSeq, 0);
-                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
-                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
-            }
-            if (Input.GetKeyDown(KeyCode.Keypad1))
-            {
-                playerDBMain.PlayerSetPoint(playerDBMain.localPlayerSeq, 1);
-                playerDBMain.PlayerSyncPoint(playerDBMain.localPlayerSeq);
-                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
+                keyLimit++;
             }
         }
     }
 
     //마스터전용 치트 관련 함수
-    public void TeleportAllToMe()
+    public void TeleportMeToMaster()
     {
-        for (int i = 1; i < playerDBMain.playerCount; i++)
-        {
-            playerDBMain.playerList[i].TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
-        }
+        playerDBMain.localPlayer.TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
     }
 
     //포인트 UI업데이트

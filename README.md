@@ -1,7 +1,9 @@
 # Sector001-Space
-
 연구나공부하기위해 만든 VRChat월드 씬과 U#스크립트 파일들입니다  
 VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
+
+## 개발환경
+* [Unity 2019.4.31](https://unity3d.com/unity/whats-new/2019.4.31)
 
 ## 사용된 에셋
 * 필수
@@ -18,5 +20,5 @@ VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
   * [Lura's Switch](https://booth.pm/ko/items/1969082)
   * [Perfect Water Shaders (VR Ready)](https://www.patreon.com/posts/32252234)
 
-## 월드 플레이해보기
-World Link : https://vrchat.com/home/launch?worldId=wrld_474b327a-c4e1-4033-b2dd-6bbf78e98ab9
+## 월드 플레이하기
+> https://vrchat.com/home/launch?worldId=wrld_474b327a-c4e1-4033-b2dd-6bbf78e98ab9
