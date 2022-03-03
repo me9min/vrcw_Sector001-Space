@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: AudioSourceClipSystem
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: a898307db4ac6cc4caa688757faaf03d,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: a5fb52de8e52f8342a57b805121ad7ae,
     type: 2}
   udonAssembly: 
   assemblyError: 

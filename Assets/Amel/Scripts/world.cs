@@ -75,7 +75,7 @@ public class world : UdonSharpBehaviour
             }
 
 
-            if (keyLimit > 50)
+            if (keyLimit >= 50)
             {
                 keyLimit = 0;
 

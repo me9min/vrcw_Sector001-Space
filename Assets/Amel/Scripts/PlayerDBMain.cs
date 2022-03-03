@@ -190,7 +190,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         if (playerListUpdateSwitch)
         {
             //10번 반복후 실행
-            if (playerListUpdateSwitchTimer > 9)
+            if (playerListUpdateSwitchTimer >= 10)
             {
                 //로컬변수에 인원리스트,인원수 세팅
                 UpdateSortPlayerList();

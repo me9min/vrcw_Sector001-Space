@@ -53,7 +53,7 @@ public class welcomemat : UdonSharpBehaviour
         if (msgUpdateSwitch)
         {
             //10번 반복후 실행
-            if (msgUpdateSwitchTimer > 9)
+            if (msgUpdateSwitchTimer >= 10)
             {
                 if (playerDBMain.isPlayerSetted)
                 {

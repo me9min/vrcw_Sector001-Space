@@ -7,8 +7,8 @@ VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
 
 ## 사용된 에셋
 * 필수
-  * [VRChat SDK3 World 2021.11.24](https://vrchat.com/home/download)
-  * [UdonSharp](https://github.com/vrchat-community/UdonSharp)
+  * [VRChat SDK3 World 2022.02.16.19.13](https://vrchat.com/home/download)
+  * [UdonSharp 0.20.3](https://github.com/vrchat-community/UdonSharp)
 * 선택
   * [CyanEmu](https://github.com/CyanLaser/CyanEmu)
   * [Dark City2 - Cyberpunk Pack](https://assetstore.unity.com/packages/3d/environments/sci-fi/dark-city2-cyberpunk-pack-133817)
