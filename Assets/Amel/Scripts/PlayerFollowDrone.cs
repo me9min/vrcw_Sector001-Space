@@ -37,12 +37,15 @@ public class PlayerFollowDrone : UdonSharpBehaviour
     {
         if (playerDBMain.isPlayerSetted)
         {
-            Vector3 velo = Vector3.zero;
-            this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position + adjustedValue, ref velo, 0.1f);
-            
+            if (isFollow)
+            {
+                Vector3 velo = Vector3.zero;
+                this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position + adjustedValue, ref velo, 0.1f);
+            }
+
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (Networking.GetOwner(this.gameObject) == playerDBMain.localPlayer)
+                if (followPlayerSeq == playerDBMain.localPlayerSeq)
                 {
                     isFollow = !isFollow;
                     RequestSerialization();
