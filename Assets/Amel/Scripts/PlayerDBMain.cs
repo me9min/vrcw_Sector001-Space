@@ -38,7 +38,6 @@ public class PlayerDBMain : UdonSharpBehaviour
 
     [HideInInspector] public VRCPlayerApi[] playerList = new VRCPlayerApi[20]; //플레이어 리스트 로컬저장
     [HideInInspector] public int playerCount = 0; //플레이어수 로컬저장
-    [HideInInspector] public VRCPlayerApi localPlayer = null; //로컬플레이어(나)
     [HideInInspector] public int localPlayerSeq = 0; //로컬플레이어(나)의 순서
     [HideInInspector] public bool isPlayerSetted = false; //로컬플레이어 세팅후에 true로바뀜
     [HideInInspector] public int tempPlayerSeq = 0; //플레이어 순서 임시저장
@@ -154,8 +153,6 @@ public class PlayerDBMain : UdonSharpBehaviour
         {
             if (player.isLocal) //조인한 플레이어 가 로컬(나)인지
             {
-                //로컬 플레이어(나) 저장
-                localPlayer = player;
                 //플레이어 물리 세팅
                 PhysicsSetup(localPlayerSeq);
                 //모든플레이어 컴뱃시스템 세팅
@@ -223,10 +220,12 @@ public class PlayerDBMain : UdonSharpBehaviour
         for (byte i = 0; i < playerCount; i++)
         {
             tempMsg += i.ToString() + ".[" + playerList[i].playerId.ToString() + "] <color=#ffff32>" + playerList[i].displayName + "</color>";
+
             if (playerList[i].isMaster)
             {
                 tempMsg += " <color=#de1616>(Master)</color>";
             }
+
             if (i == localPlayerSeq)
             {
                 tempMsg += " (나)\n";

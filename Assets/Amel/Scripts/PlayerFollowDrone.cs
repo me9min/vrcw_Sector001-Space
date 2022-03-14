@@ -12,24 +12,36 @@ public class PlayerFollowDrone : UdonSharpBehaviour
     [UdonSynced] public bool isFollow = true;
     public Vector3 adjustedValue = new Vector3(0, 0, 0);
 
-    private Transform target;
-    //private int updateRate = 0;
+    private int tempPlayerId = 0;
+    private bool followPlayerUpdateSwitch = false;
+    private int followPlayerUpdateSwitchTimer = 0;
 
-    private void Start()
+    public override void OnPlayerLeft(VRCPlayerApi player)
     {
-        target = playerDBMain.playerDB[followPlayerSeq].transform;
+        isFollow = false;
+        if (playerDBMain.isPlayerSetted)
+        {
+            if (player.playerId == playerDBMain.playerList[followPlayerSeq].playerId)
+            {
+                followPlayerSeq = 0;
+            }
+            else
+            {
+                tempPlayerId = playerDBMain.playerList[followPlayerSeq].playerId;
+                followPlayerUpdateSwitch = true;
+            }
+        }
     }
 
     public override void Interact()
     {
         if (playerDBMain.isPlayerSetted)
         {
-            Networking.SetOwner(playerDBMain.localPlayer, this.gameObject);
+            Networking.SetOwner(playerDBMain.playerList[playerDBMain.localPlayerSeq], this.gameObject);
+
             followPlayerSeq = playerDBMain.localPlayerSeq;
             isFollow = true;
             RequestSerialization();
-
-            SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TargetChange");
         }
     }
 
@@ -40,7 +52,7 @@ public class PlayerFollowDrone : UdonSharpBehaviour
             if (isFollow)
             {
                 Vector3 velo = Vector3.zero;
-                this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position + adjustedValue, ref velo, 0.1f);
+                this.transform.position = Vector3.SmoothDamp(this.transform.position, playerDBMain.playerList[followPlayerSeq].GetPosition() + adjustedValue, ref velo, 0.1f);
             }
 
             if (Input.GetKeyDown(KeyCode.E))
@@ -54,22 +66,21 @@ public class PlayerFollowDrone : UdonSharpBehaviour
         }
     }
 
-    /*
     private void FixedUpdate()
     {
-        if (updateRate >= 10)
+        if (followPlayerUpdateSwitch)
         {
-            Vector3 velo = Vector3.zero;
-            this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position + adjustedValue, ref velo, 0.1f);
+            if (followPlayerUpdateSwitchTimer >= 10)
+            {
+                followPlayerSeq = playerDBMain.GetPlayerSeqById(tempPlayerId);
+                isFollow = true;
+                followPlayerUpdateSwitch = false;
+                followPlayerUpdateSwitchTimer = 0;
+            }
+            else
+            {
+                followPlayerUpdateSwitchTimer++;
+            }
         }
-        else
-        {
-            updateRate++;
-        }
-    }*/
-
-    public void TargetChange()
-    {
-        target = playerDBMain.playerDB[followPlayerSeq].transform;
     }
 }

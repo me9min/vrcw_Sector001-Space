@@ -27,7 +27,7 @@ public class world : UdonSharpBehaviour
         if (playerDBMain.isPlayerSetted)
         {
             //로컬플레이어(나)가 땅에 닿아있는지
-            if (playerDBMain.localPlayer.IsPlayerGrounded())
+            if (playerDBMain.playerList[playerDBMain.localPlayerSeq].IsPlayerGrounded())
             {
                 //WASD중 한개라도 눌럿을때
                 if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
@@ -80,12 +80,13 @@ public class world : UdonSharpBehaviour
                 keyLimit = 0;
 
                 //내가 마스터인지 (마스터전용 치트)
-                if (playerDBMain.localPlayer.isMaster)
+                if (playerDBMain.playerList[playerDBMain.localPlayerSeq].isMaster)
                 {
                     //Q버튼 눌럿을때
                     if (Input.GetKey(KeyCode.Q))
                     {
-                        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportMeToMaster");
+                        TeleportAllToMaster();
+                        //SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportMeToMaster");
                     }
                 }
 
@@ -119,7 +120,14 @@ public class world : UdonSharpBehaviour
     //마스터전용 치트 관련 함수
     public void TeleportMeToMaster()
     {
-        playerDBMain.localPlayer.TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
+        playerDBMain.playerList[playerDBMain.localPlayerSeq].TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
+    }
+    public void TeleportAllToMaster()
+    {
+        for (int i = 0; i < playerDBMain.playerCount; i++)
+        {
+            playerDBMain.playerList[i].TeleportTo(playerDBMain.playerList[0].GetPosition(), playerDBMain.playerList[0].GetRotation());
+        }
     }
 
     //포인트 UI업데이트
