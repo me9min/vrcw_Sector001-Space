@@ -82,13 +82,15 @@ public class world : UdonSharpBehaviour
         {
             if (playerDBMain.isPlayerSetted)
             {
-                //내가 마스터인지 (마스터전용 치트) 아닐경우 마스터에게 나를 텔레포트
+                //내가 마스터가 아닐경우 마스터에게 나를 텔레포트
                 if (playerDBMain.localPlayerSeq == 0)
                 {
+                    //모두에게 (마스터에게 나를 텔레포트) 함수 실행
                     SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "TeleportMeToMaster");
                 }
                 else
                 {
+                    //마스터에게 나를 텔레포트
                     TeleportMeToMaster();
                 }
             }
