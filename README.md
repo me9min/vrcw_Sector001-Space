@@ -7,7 +7,7 @@ VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
 
 ## 사용된 에셋
 * 필수
-  * [VRChat SDK3 World 2022.02.16.19.13](https://vrchat.com/home/download)
+  * [VRChat SDK3 World 2022.04.20.16.26](https://vrchat.com/home/download)
   * [UdonSharp 0.20.3](https://github.com/vrchat-community/UdonSharp)
 * 선택
   * [CyanEmu](https://github.com/CyanLaser/CyanEmu)
@@ -19,6 +19,7 @@ VRChat World Scene and U#(UdonSharp,C#) Scripts for research and study
   * [Modern Weapons Pack](https://assetstore.unity.com/packages/3d/props/guns/modern-weapons-pack-14233)
   * [Lura's Switch](https://booth.pm/ko/items/1969082)
   * [Perfect Water Shaders (VR Ready)](https://www.patreon.com/posts/32252234)
+  * [Zombie](https://assetstore.unity.com/packages/3d/characters/humanoids/zombie-30232)
 
 ## 월드 플레이하기
 > https://vrchat.com/home/launch?worldId=wrld_474b327a-c4e1-4033-b2dd-6bbf78e98ab9
