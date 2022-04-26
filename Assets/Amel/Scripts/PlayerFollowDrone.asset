@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: PlayerFollowDrone
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: bb88e165b98667f4c93a241d1c8e2e71,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: a1a078c2e378d05419d44cfe05b67593,
     type: 2}
   udonAssembly: 
   assemblyError: 

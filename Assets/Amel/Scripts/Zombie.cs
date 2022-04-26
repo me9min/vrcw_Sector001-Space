@@ -9,7 +9,8 @@ public class Zombie : UdonSharpBehaviour
 {
     public PlayerDBMain playerDBMain;
     [UdonSynced] public int followPlayerSeq = 0;
-    [UdonSynced] public bool isFollow = false;
+    public bool isFollow = false;
+    public Animator anime;
 
     private Vector3 target;
     private Vector3 targetDistance;
@@ -37,15 +38,33 @@ public class Zombie : UdonSharpBehaviour
 
     public override void OnPlayerTriggerEnter(VRCPlayerApi player)
     {
-        Debug.Log(player.playerId + " 에게 좀비가따라감");
-
         if (playerDBMain.isPlayerSetted)
         {
-            Networking.SetOwner(player, this.gameObject);
+            if (!isFollow)
+            {
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "SetAnimationWalk");
+                Debug.Log("[" + player.playerId + "] " + player.displayName + " 에게 좀비가따라감");
+                Networking.SetOwner(player, this.gameObject);
 
-            followPlayerSeq = playerDBMain.localPlayerSeq;
-            isFollow = true;
-            RequestSerialization();
+                followPlayerSeq = playerDBMain.localPlayerSeq;
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "IsFollowTrue");
+                RequestSerialization();
+            }
+        }
+    }
+
+    public override void OnPlayerTriggerExit(VRCPlayerApi player)
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            if (player == Networking.GetOwner(this.gameObject))
+            {
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "SetAnimationIdle");
+                Debug.Log("[" + player.playerId + "] " + player.displayName + " (이)가 좀비로부터 해방");
+
+                SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "IsFollowFalse");
+                RequestSerialization();
+            }
         }
     }
 
@@ -90,5 +109,23 @@ public class Zombie : UdonSharpBehaviour
                 followPlayerUpdateSwitchTimer++;
             }
         }
+    }
+
+    public void IsFollowTrue()
+    {
+        isFollow = true;
+    }
+    public void IsFollowFalse()
+    {
+        isFollow = false;
+    }
+
+    public void SetAnimationIdle()
+    {
+        anime.SetTrigger("idle");
+    }
+    public void SetAnimationWalk()
+    {
+        anime.SetTrigger("walk");
     }
 }
