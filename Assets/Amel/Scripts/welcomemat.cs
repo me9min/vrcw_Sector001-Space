@@ -71,31 +71,31 @@ public class welcomemat : UdonSharpBehaviour
         }
     }
 
-    //private void OnCollisionEnter(Collision col)
-    //{
-    //    Debug.Log(col.gameObject.name);
-    //}
+    /*private void OnCollisionEnter(Collision col)
+    {
+        Debug.Log(col.gameObject.name);
+    }
 
     //플레이어의 애니메이션이작동해서 플레이어가 부딫히거나 rigidbody에 물리적으로 충돌했을때
-    //public override void OnPlayerCollisionEnter(VRCPlayerApi player)
-    //{
-    //    Debug.Log(player.displayName);
-    //}
+    public override void OnPlayerCollisionEnter(VRCPlayerApi player)
+    {
+        Debug.Log(player.displayName);
+    }
 
     //플레이어의 파티클이 부딫혓을때
-    //public override void OnPlayerParticleCollision(VRCPlayerApi player)
-    //{
-    //    Debug.Log(player.displayName);
-    //}
+    public override void OnPlayerParticleCollision(VRCPlayerApi player)
+    {
+        Debug.Log(player.displayName);
+    }
 
-    //public void isInputfieldEnd()
-    //{
-    //    welcomeMsg.text = inputMsg.text;
-    //}
+    public void isInputfieldEnd()
+    {
+        welcomeMsg.text = inputMsg.text;
+    }
 
-    //public override void OnPlayerParticleCollision(VRCPlayerApi player)
-    //{
-    // 기존3차원각의 문제점을 보완하는 오일러각(4차원) 으로 설정
-    // this.transform.eulerAngles = new Vector3(0, 0, 0);
-    //}
+    public override void OnPlayerParticleCollision(VRCPlayerApi player)
+    {
+        //기존3차원각의 문제점을 보완하는 오일러각(4차원) 으로 설정
+        this.transform.eulerAngles = new Vector3(0,0,0);
+    }*/
 }
