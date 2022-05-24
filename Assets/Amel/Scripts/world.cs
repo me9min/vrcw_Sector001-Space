@@ -75,6 +75,7 @@ public class world : UdonSharpBehaviour
         }
     }
 
+    //프레임마다 반복
     private void Update()
     {
         //Q버튼 눌럿을때
