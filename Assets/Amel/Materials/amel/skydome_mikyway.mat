@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: fakeskybox
+  m_Name: skydome_mikyway
   m_Shader: {fileID: 4800000, guid: d92832bd0edea6c4d87948601146ec0c, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 769c24456588f8146988c044791c7c77, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskFReflection:
@@ -112,7 +112,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DirectionalLightIntensity: 0
-    - _DoubleSided: 0
+    - _DoubleSided: 2
     - _DoubleSidedOutline: 1
     - _DstBlend: 0
     - _EnableTextureTransparent: 0
@@ -206,7 +206,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
+    - _MainColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}
