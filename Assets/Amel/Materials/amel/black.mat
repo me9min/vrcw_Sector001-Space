@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: black
   m_Shader: {fileID: 4800000, guid: d92832bd0edea6c4d87948601146ec0c, type: 3}
-  m_ShaderKeywords: L_F_RELGI_ON
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -476,7 +476,7 @@ Material:
     - _Parallax: 0.02
     - _ParallaxOffset: 0.5
     - _PointSpotlightIntensity: 0.1
-    - _RELG: 1
+    - _RELG: 0
     - _RefMetallic: 0
     - _RefVal: 0
     - _Reflectance: 0.04

@@ -9,7 +9,7 @@ public class DayCycle : UdonSharpBehaviour
 {
     [Header("설정")]
     [Tooltip("Directional Light 필요")]
-    public Transform sun;
+    public Transform sunray;
     [Tooltip("Skydome(모델메쉬) 필요")]
     public Transform skydome;
     [Tooltip("시간 속도 : 실제1초 =1분(0.25), =1시간(15)")]
@@ -24,7 +24,7 @@ public class DayCycle : UdonSharpBehaviour
 
         // 0.25/360각도 = day시스템1분 = 실제1초
         // 시간값만큼 sun로테이션 바꿈, eulerAngles = 기존3차원각의 문제점을 보완하는 오일러각(4차원)
-        sun.transform.eulerAngles = new Vector3(hour, 30, 15);
+        sunray.transform.eulerAngles = new Vector3(hour, 30, 15);
         skydome.transform.eulerAngles = new Vector3(hour, 30, 15);
 
         //RenderSettings.skybox.SetFloat("_Rotation", hour);
