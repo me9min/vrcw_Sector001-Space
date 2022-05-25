@@ -45,6 +45,7 @@ public class PlayerFollowDrone : UdonSharpBehaviour
         }
     }
 
+    //프레임마다 반복
     private void Update()
     {
         if (playerDBMain.isPlayerSetted)

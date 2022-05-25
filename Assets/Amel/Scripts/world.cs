@@ -9,9 +9,11 @@ using VRC.Udon;
 [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)] //메모: RequestSerialization(); 은 싱크모드가 수동(Manual)일때 모든 UdonSync변수 동기화요청
 public class world : UdonSharpBehaviour
 {
-    [Header("플레이어DB시스템")]
+    [Header("제어할 클래스들")]
     [Tooltip("플레이어DB메인")]
     public PlayerDBMain playerDBMain;
+    [Tooltip("낮밤시간시스템")]
+    public DayCycle dayCycle;
 
     [Header("UI설정")]
     [Tooltip("웰컴 메세지")]
@@ -125,6 +127,63 @@ public class world : UdonSharpBehaviour
                 SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "UpdatePointChanged");
             }
         }
+
+        //시간 설정 키
+        if (Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            if (playerDBMain.isPlayerSetted)
+            {
+                //내가 마스터 인지
+                if (playerDBMain.localPlayerSeq == 0)
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "timeSpeedX1");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            if (playerDBMain.isPlayerSetted)
+            {
+                //내가 마스터 인지
+                if (playerDBMain.localPlayerSeq == 0)
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "timeSpeedX2");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            if (playerDBMain.isPlayerSetted)
+            {
+                //내가 마스터 인지
+                if (playerDBMain.localPlayerSeq == 0)
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "timeSpeedX60");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            if (playerDBMain.isPlayerSetted)
+            {
+                //내가 마스터 인지
+                if (playerDBMain.localPlayerSeq == 0)
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "timeSpeedX4");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            if (playerDBMain.isPlayerSetted)
+            {
+                //내가 마스터 인지
+                if (playerDBMain.localPlayerSeq == 0)
+                {
+                    SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "timeSpeedX0");
+                }
+            }
+        }
     }
 
     //마스터전용 치트 관련 함수
@@ -137,5 +196,27 @@ public class world : UdonSharpBehaviour
     public void UpdatePointChanged()
     {
         welcomeMsg.text = playerDBMain.playerList[playerDBMain.tempPlayerSeq].displayName + "님의 포인트: " + playerDBMain.PlayerGetPoint(playerDBMain.tempPlayerSeq).ToString();
+    }
+
+    //시간 설정 함수
+    public void timeSpeedX1()
+    {
+        dayCycle.timeSpeed = 0.25f;
+    }
+    public void timeSpeedX2()
+    {
+        dayCycle.timeSpeed = 0.5f;
+    }
+    public void timeSpeedX4()
+    {
+        dayCycle.timeSpeed = 1f;
+    }
+    public void timeSpeedX60()
+    {
+        dayCycle.timeSpeed = 15f;
+    }
+    public void timeSpeedX0()
+    {
+        dayCycle.IsTimeFlowToggle();
     }
 }

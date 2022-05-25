@@ -16,8 +16,9 @@ public class DayCycle : UdonSharpBehaviour
     [Tooltip("1초당 시간 : 실제1초 =1분(0.25), =1시간(15)")]
     public float timeSpeed = 0.25f;
     [Tooltip("0 <= 시작시간 < 360")]
-    [UdonSynced]
-    public float hour = 0; //360 15=1시간/실제1분 0.25=1분/실제1초
+    [UdonSynced] public float hour = 0; //360 15=1시간/실제1분 0.25=1분/실제1초
+    [Tooltip("시간정지")]
+    [UdonSynced] public bool isTimeFlow = true;
 
     [Header("시각표시")]
     [Tooltip("시계(Ui.Text)")]
@@ -37,36 +38,45 @@ public class DayCycle : UdonSharpBehaviour
     //프레임마다 반복
     private void Update()
     {
-        //0.25/360각도 = day시스템1분 = 실제1초
-        //시간값만큼 sun로테이션 바꿈, eulerAngles = 기존3차원각의 문제점을 보완하는 오일러각(4차원)
-        sunray.transform.eulerAngles = new Vector3(hour, 30, 15);
-        skydome.transform.eulerAngles = new Vector3(hour, 30, 15);
-
-        //deltaTime : 1fps = 1, 50fps = 0.02, 100fps = 0.01
-        hour += Time.deltaTime*timeSpeed; // hour=1분/실제1초 == hour=0.25
-
-        //24시 이상일시 24시간 나눠서 나머지를 적용  예) hour가24.4면 0.4로, 49면 1로
-        if (hour >= 360f)
+        if (isTimeFlow)
         {
-            hour = hour%360f;
-        }
+            //0.25/360각도 = day시스템1분 = 실제1초
+            //시간값만큼 sun로테이션 바꿈, eulerAngles = 기존3차원각의 문제점을 보완하는 오일러각(4차원)
+            sunray.transform.eulerAngles = new Vector3(hour, 30, 15);
+            skydome.transform.eulerAngles = new Vector3(hour, 30, 15);
 
-        tSec = Mathf.Floor((hour % 0.25f) * 240f).ToString();
-        tMin = Mathf.Floor((hour % 15f) * 4f).ToString();
-        tHour = ((Mathf.Floor(hour / 15f) + 6) % 24).ToString();
-        if (tSec.Length == 1)
-        {
-            tSec = "0" + tSec;
-        }
-        if (tMin.Length == 1)
-        {
-            tMin = "0" + tMin;
-        }
-        if (tHour.Length == 1)
-        {
-            tHour = "0" + tHour;
-        }
+            //deltaTime : 1fps = 1, 50fps = 0.02, 100fps = 0.01
+            hour += Time.deltaTime * timeSpeed; // hour=1분/실제1초 == hour=0.25
 
-        ClockMsg.text = tHour + ":" + tMin + ":" + tSec;
+            //24시 이상일시 24시간 나눠서 나머지를 적용  예) hour가24.4면 0.4로, 49면 1로
+            if (hour >= 360f)
+            {
+                hour = hour % 360f;
+            }
+
+            tSec = Mathf.Floor((hour % 0.25f) * 240f).ToString();
+            tMin = Mathf.Floor((hour % 15f) * 4f).ToString();
+            tHour = ((Mathf.Floor(hour / 15f) + 6) % 24).ToString();
+            if (tSec.Length == 1)
+            {
+                tSec = "0" + tSec;
+            }
+            if (tMin.Length == 1)
+            {
+                tMin = "0" + tMin;
+            }
+            if (tHour.Length == 1)
+            {
+                tHour = "0" + tHour;
+            }
+
+            ClockMsg.text = tHour + ":" + tMin + ":" + tSec;
+        }
+    }
+
+    //시간정지 toggle
+    public void IsTimeFlowToggle()
+    {
+        isTimeFlow = !isTimeFlow;
     }
 }
