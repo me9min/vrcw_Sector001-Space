@@ -81,10 +81,12 @@ public class PlayerDBMain : UdonSharpBehaviour
         }
     }
 
+    //플레이어 순서로 플레이어 얻기
     public VRCPlayerApi GetPlayerBySeq(int playerSeq)
     {
         return playerList[playerSeq];
     }
+    //플레이어 아이디로 플레이어 얻기
     public VRCPlayerApi GetPlayerById(int playerId)
     {
         VRCPlayerApi player = null;
@@ -98,6 +100,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         }
         return player;
     }
+    //플레이어 아이디로 플레이어순서 얻기
     public int GetPlayerSeqById(int playerId)
     {
         int playerSeq = 0;
@@ -115,11 +118,11 @@ public class PlayerDBMain : UdonSharpBehaviour
     //플레이어 물리 세팅 모아둔 함수
     public void PhysicsSetup(int playerSeq)
     {
-        playerList[playerSeq].SetWalkSpeed(walkSpeed);
-        playerList[playerSeq].SetStrafeSpeed(walkSpeed);
-        playerList[playerSeq].SetRunSpeed(runSpeed);
-        playerList[playerSeq].SetJumpImpulse(jumpPower);
-        playerList[playerSeq].SetGravityStrength(gravityPower);
+        playerList[playerSeq].SetWalkSpeed(walkSpeed); //앞 속도
+        playerList[playerSeq].SetStrafeSpeed(walkSpeed); //좌우(옆) 속도
+        playerList[playerSeq].SetRunSpeed(runSpeed); //달리기 속도
+        playerList[playerSeq].SetJumpImpulse(jumpPower); //점프 힘
+        playerList[playerSeq].SetGravityStrength(gravityPower); //중력
     }
 
     //플레이어 컴뱃시스템 세팅 모아둔 함수
@@ -132,7 +135,7 @@ public class PlayerDBMain : UdonSharpBehaviour
         playerList[playerSeq].CombatSetRespawn(true, respawnTime, respawnLocation); //리스폰 할지 여부 true or false , 리스폰시간float값(초) , 리스폰할 위치 transform형식 외부에서받아오는걸로많이씀
         playerList[playerSeq].CombatSetup(); //이걸로 마무리 이유는모르겠음
     }
-
+    
     //어떤 플레이어가 접속했을때 들어온 플레이어객체를 반환
     public override void OnPlayerJoined(VRCPlayerApi player)
     {
@@ -215,7 +218,9 @@ public class PlayerDBMain : UdonSharpBehaviour
     //플레이어리스트 UI 텍스트 만들기
     public string MakePlayerListMsg()
     {
-        string tempMsg = ""; //임시 메세지 선언, 빈칸삽입
+        //임시 메세지 선언, 빈칸삽입
+        string tempMsg = "";
+
         //리스트메세지 만들기(플레이어수 만큼 반복)
         for (byte i = 0; i < playerCount; i++)
         {
@@ -268,13 +273,13 @@ public class PlayerDBMain : UdonSharpBehaviour
     {
         playerDB[playerDBSeq].RunSoundPlayGlobal();
     }
+    public void PlayerJumpSoundPlay(int playerDBSeq)
+    {
+        playerDB[playerDBSeq].JumpSoundPlayGlobal();
+    }
     public void PlayerLandingSoundPlay(int playerDBSeq)
     {
         playerDB[playerDBSeq].LandingSoundPlayGlobal();
-    }
-    public void PlayerHardLandingSoundPlay(int playerDBSeq)
-    {
-        playerDB[playerDBSeq].HardLandingSoundPlayGlobal();
     }
 
     //플레이어 포인트 관련 함수 라우팅

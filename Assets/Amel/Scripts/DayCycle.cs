@@ -54,22 +54,12 @@ public class DayCycle : UdonSharpBehaviour
                 hour = hour % 360f;
             }
 
-            tSec = Mathf.Floor((hour % 0.25f) * 240f).ToString();
-            tMin = Mathf.Floor((hour % 15f) * 4f).ToString();
-            tHour = ((Mathf.Floor(hour / 15f) + 6) % 24).ToString();
-            if (tSec.Length == 1)
-            {
-                tSec = "0" + tSec;
-            }
-            if (tMin.Length == 1)
-            {
-                tMin = "0" + tMin;
-            }
-            if (tHour.Length == 1)
-            {
-                tHour = "0" + tHour;
-            }
+            //시계표현값 계산
+            tSec = Mathf.Floor((hour % 0.25f) * 240f).ToString("00");
+            tMin = Mathf.Floor((hour % 15f) * 4f).ToString("00");
+            tHour = ((Mathf.Floor(hour / 15f) + 6) % 24).ToString("00");
 
+            //시계UI 업데이트
             ClockMsg.text = tHour + ":" + tMin + ":" + tSec;
         }
     }

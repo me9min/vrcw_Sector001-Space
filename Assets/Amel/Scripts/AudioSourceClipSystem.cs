@@ -12,7 +12,7 @@ public class AudioSourceClipSystem : UdonSharpBehaviour
     public AudioSource playAudio;
     [Tooltip("오디오 소스 클립")]
     public AudioClip[] audioClips;
-        
+    
     public void RandomPlay()
     {
         playAudio.clip = audioClips[Random.Range(0, audioClips.Length)];

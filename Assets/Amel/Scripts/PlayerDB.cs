@@ -19,10 +19,10 @@ public class PlayerDB : UdonSharpBehaviour
     public AudioSourceClipSystem walkSoundClip;
     [Tooltip("달리는 발걸음 소리")]
     public AudioSourceClipSystem runSoundClip;
+    [Tooltip("점프 소리")]
+    public AudioSourceClipSystem jumpSoundClip;
     [Tooltip("착지 소리")]
-    public AudioSourceClipSystem landingSoundClip;
-    [Tooltip("강한 착지 소리")]
-    public AudioSourceClipSystem hardLandingSoundClip;
+    public AudioSourceClipSystem LandingSoundClip;
 
     [Header("플레이어 초기 소지금")]
     [UdonSynced] public int point = 0;
@@ -40,6 +40,7 @@ public class PlayerDB : UdonSharpBehaviour
     {
         if (playerDBMain.isPlayerSetted)
         {
+            //현재오브젝트의 위치를 playerDBSeq 플레이어 위치로 동기화
             this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
         }
     }
@@ -47,6 +48,7 @@ public class PlayerDB : UdonSharpBehaviour
     {
         if (playerDBMain.isPlayerSetted)
         {
+            //현재오브젝트의 방향을 playerDBSeq 플레이어 방향으로 동기화
             this.transform.rotation = playerDBMain.GetPlayerBySeq(playerDBSeq).GetRotation();
         }
     }
@@ -69,21 +71,22 @@ public class PlayerDB : UdonSharpBehaviour
             SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "RunSoundPlay");
         }
     }
+    public void JumpSoundPlayGlobal()
+    {
+        //점프소리 play 모두에게 전송
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "JumpSoundPlay");
+    }
     public void LandingSoundPlayGlobal()
     {
         //착지소리 play 모두에게 전송
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "LandingSoundPlay");
-    }
-    public void HardLandingSoundPlayGlobal()
-    {
-        //강한착지소리 play 모두에게 전송
-        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "HardLandingSoundPlay");
     }
 
     public void WalkSoundPlay()
     {
         if (playerDBMain.isPlayerSetted)
         {
+            this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
             walkSoundClip.RandomPlay();
         }
     }
@@ -91,30 +94,34 @@ public class PlayerDB : UdonSharpBehaviour
     {
         if (playerDBMain.isPlayerSetted)
         {
+            this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
             runSoundClip.RandomPlay();
+        }
+    }
+    public void JumpSoundPlay()
+    {
+        if (playerDBMain.isPlayerSetted)
+        {
+            this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
+            jumpSoundClip.RandomPlay();
         }
     }
     public void LandingSoundPlay()
     {
         if (playerDBMain.isPlayerSetted)
         {
-            landingSoundClip.RandomPlay();
-        }
-    }
-    public void HardLandingSoundPlay()
-    {
-        if (playerDBMain.isPlayerSetted)
-        {
-            hardLandingSoundClip.RandomPlay();
+            this.transform.position = playerDBMain.GetPlayerBySeq(playerDBSeq).GetPosition();
+            LandingSoundClip.RandomPlay();
         }
     }
 
     //플레이어 포인트관련 함수
-    [System.Obsolete]
+    //소유권 이전시 포인트 초기화 VRC버전업후 오류때문에 비활성화
+    /*[System.Obsolete]
     public override void OnOwnershipTransferred()
     {
         point = 0;
-    }
+    }*/
     public void SyncPoint()
     {
         RequestSerialization();
